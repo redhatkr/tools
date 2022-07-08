@@ -1,4 +1,5 @@
 #!/bin/bash
+BASEDIR="tar"
 FROM="docker-archive:."
 TO="docker://vm-bastion.ocp-vm.poc.cloud:8443/admin"
 SRC_CREDS="admin:r3dh4t1!"
@@ -30,8 +31,8 @@ do
   
   echo ""
   echo ">>>>>>>> COPY for $IMAGE:$TAG"
-  echo "skopeo copy --dest-creds=ocpadmin:ocpadmin --dest-tls-verify=false $FROM/$IMAGE#$TAG.tar $TO/$IMAGE:$TAG"
-  skopeo copy --dest-creds=ocpadmin:ocpadmin --dest-tls-verify=false $FROM/$IMAGE#$TAG.tar $TO/$IMAGE:$TAG
+  echo "skopeo copy --dest-creds=ocpadmin:ocpadmin --dest-tls-verify=false $FROM/$BASEDIR/$IMAGE#$TAG.tar $TO/$IMAGE:$TAG"
+  skopeo copy --dest-creds=ocpadmin:ocpadmin --dest-tls-verify=false $FROM/$BASEDIR/$IMAGE#$TAG.tar $TO/$IMAGE:$TAG
 
   # add tar file to list
   echo -e $IMAGE#$TAG.tar >> $LOADED_FILE

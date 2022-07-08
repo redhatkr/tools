@@ -1,8 +1,9 @@
 #!/bin/bash
 INPUT=$1
-FROM="docker://ocp-registry-quay-quay.apps.ocp-vm.poc.cloud/admin"
+FROM="docker://vm-bastion.ocp-vm.poc.cloud:8443"
+BASEDIR="tar"
 TO="docker-archive:."
-SRC_CREDS="admin:r3dh4t1!"
+SRC_CREDS="ocpadmin:ocpadmin"
 DESC_CREDS="ocpadmin:ocpadmin"
 SAVED_FILE="tar-saved-file.txt"
 
@@ -21,6 +22,11 @@ do
   echo ""
   echo "$IMAGE"
   echo "---"
+
+  DIR_STRING=$(echo $IMAGE | awk -F"/" '{ for(i=1; i<NF; i++) printf "%s/",$i }')
+  echo "DIR_STRING = [$DIR_STRING]"
+  mkdir -p $BASEDIR/$DIR_STRING
+
   RESULT=$(skopeo list-tags --creds=$SRC_CREDS --tls-verify=false $FROM/$IMAGE)
 
 #  echo $RESULT
@@ -35,8 +41,8 @@ do
       TAG=$(echo $TAG | tr -d '\"')
       echo ""
       echo ">>>>>>>> COPY for $IMAGE:$TAG"
-      echo "skopeo copy --remove-signatures --src-creds=$SRC_CREDS --src-tls-verify=false $FROM/$IMAGE:$TAG $TO/$IMAGE#$TAG.tar"
-      skopeo copy --remove-signatures --src-creds=$SRC_CREDS --src-tls-verify=false $FROM/$IMAGE:$TAG $TO/$IMAGE#$TAG.tar
+      echo "skopeo copy --remove-signatures --src-creds=$SRC_CREDS --src-tls-verify=false $FROM/$IMAGE:$TAG $TO/$BASEDIR/$IMAGE#$TAG.tar"
+      skopeo copy --remove-signatures --src-creds=$SRC_CREDS --src-tls-verify=false $FROM/$IMAGE:$TAG $TO/$BASEDIR/$IMAGE#$TAG.tar
 
       # add tar file to list
       echo -e $IMAGE#$TAG.tar >> $SAVED_FILE
