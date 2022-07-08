@@ -7,7 +7,7 @@ DESC_CREDS="ocpadmin:ocpadmin"
 SAVED_FILE="tar-saved-file.txt"
 LOADED_FILE="tar-loaded-file.txt"
 
-INPUT=$SAVED_FILE
+INPUT=$1
 
 rm $LOADED_FILE
 
@@ -26,7 +26,8 @@ do
 
   IMAGE=$(echo $TAR | awk -F"#" '{ printf $1 }')
   TAG=$(echo $TAR | awk -F"#" '{ printf $2 }')
-  TAG=$(echo $TAG | tr -d '.tar')
+  echo "image=$IMAGE, tag=$TAG"
+  TAG=${TAG%\.tar}
   echo "image=$IMAGE, tag=$TAG"
   
   echo ""
